@@ -3,6 +3,8 @@ package com.hashedin.fastkart.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hashedin.fastkart.enums.UserType;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +30,17 @@ public class Users {
 
     private String password;
 
+    @JsonIgnore
+    public String getPassword() {
+    	return this.password;
+    }
+    
+    @JsonProperty
+    public void setPassword(String password) {
+    	this.password = password;
+    }
+    
+    
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
