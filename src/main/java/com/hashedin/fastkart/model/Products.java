@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hashedin.fastkart.enums.ProductType;
 
 import lombok.AllArgsConstructor;
@@ -40,9 +42,11 @@ public class Products {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @JsonBackReference //Because this class is Child
     private Users users;
 
     @OneToMany(mappedBy = "products")
+    @JsonManagedReference //Because this class is Parent
     private List<Bids> bidsList = new ArrayList<>();
 
 }

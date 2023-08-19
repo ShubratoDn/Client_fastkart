@@ -53,6 +53,8 @@ public class JwtLoginController {
 	}
 	
 	
+	
+	
 	@PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
         String username = loginForm.getUsername();
@@ -79,10 +81,11 @@ public class JwtLoginController {
         UserDetails userDetails = customUserDetailsServiceImpl.loadUserByUsername(username);
         String token = jwtTokenProvider.generateToken(userDetails);
 
-        Users userByUsername = services.getUserByUsername(username);
-        LoginResponse loginResponse = new LoginResponse(token, userByUsername);
+        Users user = services.getUserByUsername(username);
+        LoginResponse loginResponse = new LoginResponse(token, user);
 
         log.info("User '{}' logged in successfully.", username);
+        
         return ResponseEntity.ok(loginResponse);
     }
         

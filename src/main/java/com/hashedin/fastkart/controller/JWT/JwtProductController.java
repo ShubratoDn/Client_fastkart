@@ -1,29 +1,27 @@
 package com.hashedin.fastkart.controller.JWT;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hashedin.fastkart.enums.ProductType;
 import com.hashedin.fastkart.enums.UserType;
+import com.hashedin.fastkart.exception.ErrorResponse;
 import com.hashedin.fastkart.form.ProductForm;
 import com.hashedin.fastkart.model.Products;
 import com.hashedin.fastkart.model.Users;
 import com.hashedin.fastkart.repository.BidsRepository;
-import com.hashedin.fastkart.repository.ProductsRepository;
-import com.hashedin.fastkart.repository.UsersRepository;
-import com.hashedin.fastkart.service.LoginService;
+import com.hashedin.fastkart.service.ProductServices;
+import com.hashedin.fastkart.service.UsersServices;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,101 +29,75 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class JwtProductController {
 
-    @Autowired
-    private ProductsRepository productsRepository;
+	@Autowired
+	private ProductServices productServices;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersServices usersServices;
+    
+    BidsRepository bidsRepository;
 
-    @Autowired
-    private BidsRepository bidsRepository;
+    
+    
+    @GetMapping("/Product/{id}")
+    public ResponseEntity<?> getProductNew(@PathVariable("id") int id) {
 
-    @Autowired
-    private LoginService loginService;
-
-//    @GetMapping("/ListProduct")
-//    public String sellProduct(@RequestParam(value = "sellerId", required = false) String sellerId, Model model) {
-//        log.info("product for seller ---> {}", sellerId);
-//        Integer id = Integer.parseInt(sellerId);
-//        model.addAttribute("sellerId", id);
-//        Optional<Users> user = usersRepository.findById(Integer.parseInt(sellerId));
-//        if (!user.isEmpty()) {
-//            model.addAttribute("token", loginService.getToken(user.get().getUsername()));
-//        }
-//        return "sellProduct";
-//    }
-//
-//    @GetMapping("/Product/{id}")
-//    public String getProductNew(@PathVariable("id") String id, @RequestParam("userId") Integer userId, Model model) {
-//
-//        Optional<Users> user = usersRepository.findById(userId);
-//        Optional<Products> product = productsRepository.findById(Integer.parseInt(id));
-//        List<Object[]> bidsExtraVar = bidsRepository.findBidAmountAndUserByProductId(product.get().getProductId());
-//        if (!bidsExtraVar.isEmpty())
-//            model.addAttribute("hasPlacedBids", true);
-//        if (product.isPresent())
-//            model.addAttribute("productData", product);
-//        else {
-//        }
-//        if (user.isPresent()) {
-//            model.addAttribute("user", user);
-//            model.addAttribute("token", loginService.getToken(user.get().getUsername()));
-//            if (user.get().getUserType().equals(UserType.BUYER)) {
-//                List<Object[]> results = bidsRepository.findBidAmountAndUserByProductId(product.get().getProductId());
-//                log.info("buyer bid count ---> {} ", results.size());
-//                if (!results.isEmpty()) {
-//                    model.addAttribute("bidData", results);
-//                } else {
-//                    model.addAttribute("noBids", true);
-//                }
-//            } else {
-//                Integer minBidAmountByBuyer = Integer.MAX_VALUE;
-//                Integer maxBidAmountByBuyer = Integer.MIN_VALUE;
-//
-//                List<Object[]> results = bidsRepository.findBidAmountAndUserByProductId(Integer.parseInt(id));
-//                log.info("product bid count ---> {} ", results.size());
-//                model.addAttribute("productData", product);
-//                model.addAttribute("sellerId", product.get().getUsers().getUserId());
-//                model.addAttribute("user", user);
-//                if (!results.isEmpty()) {
-//                    model.addAttribute("bidData", results);
-//                    for (Object[] result : results) {
-//                        Integer amount = (Integer) result[0];
-//                        minBidAmountByBuyer = Math.min(minBidAmountByBuyer, amount);
-//                        maxBidAmountByBuyer = Math.max(maxBidAmountByBuyer, amount);
-//                    }
-//                    model.addAttribute("minBidAmountByBuyer", minBidAmountByBuyer);
-//                    model.addAttribute("maxBidAmountByBuyer", maxBidAmountByBuyer);
-//                } else {
-//                    model.addAttribute("noBids", true);
-//                }
-//            }
-//        } else {
-//        }
-//        return "productDetails";
-//    }
+    	Products productById = productServices.getProductById(id);
+    	if (productById == null) {
+    	    ErrorResponse errorResponse = new ErrorResponse(
+    	        new Date(),
+    	        HttpStatus.NOT_FOUND.toString(),
+    	        "Product not found",
+    	        "The requested product was not found"
+    	    );
+    	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    	}    	
+    	return  ResponseEntity.ok(productById);    	
+    }
     
     
     
     
 
-//    @PostMapping("/Product")
-//    public ResponseEntity<?> postProduct(ProductForm productForm) {
-//        String name = productForm.getName();
-//        String description = productForm.getDescription();
-//        Integer minBidAmount = productForm.getMinBidAmount();
-//        ProductType category = productForm.getCategory();
-//        
-//        Date currentDate = new Date();
-//        
-//        Products product = new Products();
-//        product.setName(name);
-//        product.setDescription(description);
-//        product.setMinBidAmount(minBidAmount);
-//        product.setProductType(category);
-//        product.setCreationDateTime(currentDate);
-////        product.setUsers(seller.get());
-//        
-//        return ResponseEntity.ok("");
-//    }
+    @PostMapping("/Product")
+    public ResponseEntity<?> postProduct(@RequestBody ProductForm productForm) {
+        String name = productForm.getName();
+        String description = productForm.getDescription();
+        Integer minBidAmount = productForm.getMinBidAmount();
+        ProductType category = productForm.getCategory();
+        Date currentDate = new Date();
+
+        // Get the username of the logged-in user
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users loggedUser = usersServices.getUserByUsername(username);
+
+        log.info("Received request to add a product by user: {}", username);
+
+        // Check if the logged-in user is a buyer
+        if (loggedUser.getUserType() == UserType.BUYER) {
+            log.error("Buyer '{}' tried to add a product. Buyers are not allowed to add products.", username);
+            ErrorResponse errorResponse = new ErrorResponse(new Date(), HttpStatus.FORBIDDEN.toString(),
+                    "Buyer cannot add a product", "Buyer users are not allowed to add products");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+
+        Products product = new Products();
+        product.setName(name);
+        product.setDescription(description);
+        product.setMinBidAmount(minBidAmount);
+        product.setProductType(category);
+        product.setCreationDateTime(currentDate);
+        product.setUsers(loggedUser);
+
+        if (productServices.addProduct(product) != null) {
+            log.info("Product '{}' added successfully by user: {}", name, username);
+            return ResponseEntity.ok("Product Added Successfully");
+        } else {
+            log.error("Failed to add product '{}' by user: {}", name, username);
+            ErrorResponse errorResponse = new ErrorResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                    "Product not added", "There was an issue adding the product");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
 }

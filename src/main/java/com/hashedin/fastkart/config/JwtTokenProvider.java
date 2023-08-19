@@ -15,7 +15,7 @@ public class JwtTokenProvider {
 	private String jwtSecret = "user";
 
 //	@Value("${app.jwt-expiration-milliseconds}")
-	private int jwtExpirationInMs = 60000;
+	private int jwtExpirationInMs = 6000000;
 
 	// generate token
 	public String generateToken(UserDetails userDetails) {

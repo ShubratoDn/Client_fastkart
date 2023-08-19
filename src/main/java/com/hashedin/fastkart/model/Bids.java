@@ -10,6 +10,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -31,7 +33,8 @@ public class Bids {
     private Users users;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id") 
+    @JsonBackReference
     private Products products;
 
 }

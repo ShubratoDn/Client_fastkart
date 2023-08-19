@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hashedin.fastkart.enums.UserType;
 
@@ -45,6 +46,7 @@ public class Users {
     private UserType userType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
+    @JsonManagedReference
     private List<Products> productsList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
