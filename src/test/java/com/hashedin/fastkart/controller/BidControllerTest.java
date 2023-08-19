@@ -1,5 +1,6 @@
 package com.hashedin.fastkart.controller;
 
+import com.hashedin.fastkart.controller.JWT.JwtBidController;
 import com.hashedin.fastkart.form.BidForm;
 import com.hashedin.fastkart.model.Bids;
 import com.hashedin.fastkart.model.Products;
@@ -13,11 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +28,7 @@ import static org.mockito.Mockito.*;
 public class BidControllerTest {
 
 	@InjectMocks
-	private BidController bidController;
+	private JwtBidController bidController;
 
 	@Mock
 	private BidsRepository bidsRepository;
@@ -41,6 +44,7 @@ public class BidControllerTest {
 
 	@Mock
 	private Model model;
+
 
 	@Test
 	public void testPostBid() {
@@ -58,7 +62,7 @@ public class BidControllerTest {
 		bidForm.setSellerId("1");
 		bidForm.setProductId("1");
 		bidForm.setBidAmount(100);
-		String result = bidController.postBid(bidForm, model);
+		ResponseEntity<?> result = bidController.postBid(bidForm);
 
 		verify(bidsRepository,times(1)).save(any(Bids.class));
 		assertEquals("redirect:/buyer/" + user.getUserId(), result);
