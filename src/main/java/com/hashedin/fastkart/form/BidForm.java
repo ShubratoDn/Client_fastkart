@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BidForm {
 
-    private String bidAmount;
+    private int bidAmount;
 
     private String sellerId;
 

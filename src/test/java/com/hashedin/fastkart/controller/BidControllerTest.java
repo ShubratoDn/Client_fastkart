@@ -57,7 +57,7 @@ public class BidControllerTest {
 		BidForm bidForm = new BidForm();
 		bidForm.setSellerId("1");
 		bidForm.setProductId("1");
-		bidForm.setBidAmount("100");
+		bidForm.setBidAmount(100);
 		String result = bidController.postBid(bidForm, model);
 
 		verify(bidsRepository,times(1)).save(any(Bids.class));

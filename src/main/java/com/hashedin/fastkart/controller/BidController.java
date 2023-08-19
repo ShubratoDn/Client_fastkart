@@ -39,7 +39,7 @@ public class BidController {
 
     @PostMapping("/Bid")
     public String postBid(@ModelAttribute(name = "bidForm") BidForm bidForm, Model model) {
-        Integer bidAmount = Integer.parseInt(bidForm.getBidAmount());
+        Integer bidAmount = bidForm.getBidAmount();
         Date currentDate = new Date();
         Optional<Users> user = usersRepository.findById(Integer.parseInt(bidForm.getSellerId()));
         Optional<Products> product = productsRepository.findById(Integer.parseInt(bidForm.getProductId()));
