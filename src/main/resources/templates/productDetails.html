@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" th:src="@{/js/action.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<!--    <script>-->
+<!--	    function getProductList() {-->
+<!--	    	var token = '[[${token}]]';-->
+<!--	    	var userId = '[[${user.get().getUserId()}]]';-->
+<!--	    	var userType = '[[${user.get().getUserType().toString().toLowerCase()}]]';-->
+<!--	        $.ajax({-->
+<!--                url: "/" + userType + "/" + userId,-->
+<!--                headers: {-->
+<!--                    'Authorization': token-->
+<!--                },-->
+<!--                success: function(xhr) {-->
+<!--                }-->
+<!--            });-->
+<!--	    }-->
+<!--    </script>-->
+</head>
+<body>
+<h1>
+    PRODUCT DETAILS
+</h1>
+<body>
+
+<h5 style="display: inline;">NAME >>  </h5>
+<p th:text="${productData.get().getName()}" style="display: inline;"></p>
+<br>
+<h5 style="display: inline;">DESCRIPTION >>  </h5>
+<p th:text="${productData.get().getDescription()}" style="display: inline;"></p>
+<br>
+<h5 style="display: inline;">MIN BID AMOUNT >>  </h5>
+<p th:text="${productData.get().getMinBidAmount()}" th:value="${productData.get().getMinBidAmount()}" id="sellerBidAmount" style="display: inline;"></p>
+<br>
+<h5 style="display: inline;">CATEGORY >>  </h5>
+<p th:text="${productData.get().getProductType()}" style="display: inline;"></p>
+<br>
+<h5 style="display: inline;">LISTING TIME >>  </h5>
+<p th:text="${productData.get().getCreationDateTime()}" style="display: inline;"></p>
+<br>
+<p th:if="${noBids}" class="error">No Bids made by buyers</p>
+<div th:unless="${noBids}">
+    <h5 style="display: inline;">MIN BID BY BUYER</h5>
+    <p th:text="${minBidAmountByBuyer}" style="display: inline;"></p>
+    <br>
+    <h5 style="display: inline;">MAX BID BY BUYER</h5>
+    <p th:text="${maxBidAmountByBuyer}" style="display: inline;"></p>
+</div>
+<!--BIDS FORM-->
+<form th:if="${#strings.equalsIgnoreCase(user.get().getUserType().toString(), 'BUYER')}"  th:action="@{/Bid}" th:object="${bidForm}" method="post" onsubmit="return validateBidAmount();">
+    <label for="minBidAmount">Bid Amount</label>
+    <input type="number" id="minBidAmount" name="bidAmount">
+    <input type="hidden" name="sellerId" th:value="${user.get().getUserId()}">
+    <input type="hidden" name="productId" th:value="${productData.get().getProductId()}">
+    <input type="hidden" name="accessToken" th:value="${token}">
+    <input type="Submit" value="Submit Bid">
+</form>
+
+<table th:unless="${noBids}">
+    <thead>
+    <tr>
+        <th>Bidder Name</th>
+        <th>Bidder Amount</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="bidData : ${bidData}">
+
+        <td th:text="${bidData[1]}"></td>
+        <td th:text="${bidData[0]}"></td>
+
+    </tr>
+    </tbody>
+    <!--    -->
+    <input type="hidden" name="sellerId" id="sellerId" th:value="${user.get().getUserId()}">
+    <input type="hidden" name="userType" id="userType" th:value="${user.get().getUserType()}">
+    <input type="hidden" name="accessToken" id="accessToken" th:value="${token}">
+    <!--    -->
+</table>
+<!---->
+<!--<a th:href="@{/{userPath}/{userId}(userPath=${user.get().getUserType().toString().toLowerCase()},userId=${user.get().getUserId()})}">Go Back</a>-->
+<!---->
+<a th:onclick="getProductList()">Go Back</a>
+<script type="text/javascript" th:src="@{/js/redirect.js}"></script>
+</body>
+</html>

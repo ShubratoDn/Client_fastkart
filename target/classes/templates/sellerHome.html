@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<h1>
+    SELLER HOME
+</h1>
+<body>
+<p th:if="${noProducts}" class="error">No products listed by you! List to sell fast!</p>
+
+<table th:unless="${noProducts}">
+    <thead>
+    <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>minBidAmount</th>
+        <th>Product Type</th>
+        <th>Listing Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product, productInfo : ${productsList}">
+        <td><a th:href="@{/Product/{productId}(productId=${product.getProductId()},userId=${sellerId})}" th:text="${productInfo.index + 1}"></a></td>
+        <td th:text="${product.getName()}"></td>
+        <td th:text="${product.getDescription()}"></td>
+        <td th:text="${product.getMinBidAmount()}"></td>
+        <td th:text="${product.getProductType()}"></td>
+        <td th:text="${product.getCreationDateTime()}"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+<form th:action="@{/ListProduct}">
+    <input type="hidden" th:name="sellerId" th:value="${sellerId}" />
+    <input type="Submit" value="Sell Product">
+</form>
+
+<a th:href="@{/login}">Logout</a>
+
+</body>
+</html>

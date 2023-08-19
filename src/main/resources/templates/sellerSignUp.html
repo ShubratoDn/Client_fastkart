@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>
+    SELLER SIGN UP
+</h1>
+<body>
+<p>hello SELLER</p>
+<form th:action="@{/sellerSignUp}" th:object="${signUpForm}" method="post">
+    <p th:if="${invalidCredentials}" class="error">Username already exists</p>
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" autofocus="autofocus"/>
+    <br>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" autofocus="autofocus"/>
+    <br>
+    <input type="hidden" name="type" value="SELLER">
+    <input type="Submit" value="Sign Up">
+</form>
+</body>
+</html>

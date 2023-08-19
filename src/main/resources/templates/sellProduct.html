@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>
+    DESCRIBE PRODUCT TO SELL
+</h1>
+<body>
+    <form th:action="@{/Product}" th:object="${productForm}" method="post">
+        <p th:if="${invalidUser}" class="error">User not found, consider signing up!</p>
+        <p th:if="${invalidCredentials}" class="error">Wrong password!</p>
+        <label for="name">Product Name</label>
+        <input type="text" id="name" name="name" autofocus="autofocus"/>
+        <br>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" autofocus="autofocus"/>
+        <br>
+<!--        MIN BID AMOUNT-->
+        <label for="minBidAmount">Bid Amount</label>
+        <input type="number" id="minBidAmount" name="minBidAmount" min="1" max="200000">
+        <br>
+<!--        CATEGORY-->
+        <input type="radio" id="html" name="category" value="MOBILE">
+        <label for="html">Mobile</label><br>
+        <input type="radio" id="css" name="category" value="WATCH">
+        <label for="css">Watch</label><br>
+        <input type="radio" id="javascript" name="category" value="HEADPHONES">
+        <label for="javascript">Headphones</label>
+<!--        SELLER ID-->
+        <input type="hidden" name="sellerId" th:value="${sellerId}">
+        <input type="Submit" value="List Selling">
+    </form>
+    <br>
+    <br>
+    <a th:href="@{/seller/{sellerId}(sellerId=${sellerId})}">Go Back</a>
+<!--    <a th:href="@{/sellerHome/${sellerId}">Go Back</a>-->
+</body>
+</html>
