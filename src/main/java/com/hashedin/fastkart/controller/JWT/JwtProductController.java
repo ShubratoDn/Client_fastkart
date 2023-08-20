@@ -35,55 +35,90 @@ public class JwtProductController {
     @Autowired
     private UsersServices usersServices;
     
-    BidsRepository bidsRepository;
+    
 
     
+    /**
+     * Get a list of all products.
+     *
+     * @return A ResponseEntity with a list of all products.
+     */
     @GetMapping("/ListProduct")
-    public ResponseEntity<?> getAllProducts(){
-    	List<Products> allProducts = productServices.getAllProducts();
-    	return ResponseEntity.ok(allProducts);
+    public ResponseEntity<?> getAllProducts() {
+        List<Products> allProducts = productServices.getAllProducts();
+        log.info("Retrieved a list of all products.");
+        return ResponseEntity.ok(allProducts);
     }
     
     
-    //get products by user id
+    
+    
+    /**
+     * Get the products owned by the currently logged-in user.
+     *
+     * @return A ResponseEntity with a list of products owned by the user.
+     */
     @GetMapping("/getmyproducts")
-    public ResponseEntity<?> getMyProducts(){    	
-    	String name = SecurityContextHolder.getContext().getAuthentication().getName();
-    	Users loggedUser = usersServices.getUserByUsername(name);    	
-    	List<Products> productsByUser = productServices.getProductsByUserId(loggedUser.getUserId());
-    	return ResponseEntity.ok(productsByUser);
+    public ResponseEntity<?> getMyProducts() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users loggedUser = usersServices.getUserByUsername(name);
+        List<Products> productsByUser = productServices.getProductsByUserId(loggedUser.getUserId());
+        log.info("Retrieved products owned by user: {}", name);
+        return ResponseEntity.ok(productsByUser);
     }
     
     
-    //get products by user id
+    
+
+    /**
+     * Get the products owned by a user based on their user ID.
+     *
+     * @param id The user ID for which products need to be retrieved.
+     * @return A ResponseEntity with a list of products owned by the specified user.
+     */
     @GetMapping("/Product/user/{id}")
-    public ResponseEntity<?> getProductsByUserId(@PathVariable int id){  	
-    	List<Products> productsByUser = productServices.getProductsByUserId(id);
-    	return ResponseEntity.ok(productsByUser);
+    public ResponseEntity<?> getProductsByUserId(@PathVariable int id) {
+        List<Products> productsByUser = productServices.getProductsByUserId(id);
+        log.info("Retrieved products owned by user with ID: {}", id);
+        return ResponseEntity.ok(productsByUser);
     }
+
     
     
     
+    /**
+     * Get a product by its ID.
+     *
+     * @param id The ID of the product to retrieve.
+     * @return A ResponseEntity with the product if found, or an error response if not found.
+     */
     @GetMapping("/Product/{id}")
     public ResponseEntity<?> getProductNew(@PathVariable("id") int id) {
-
-    	Products productById = productServices.getProductById(id);
-    	if (productById == null) {
-    	    ErrorResponse errorResponse = new ErrorResponse(
-    	        new Date(),
-    	        HttpStatus.NOT_FOUND.toString(),
-    	        "Product not found",
-    	        "The requested product was not found"
-    	    );
-    	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    	}    	
-    	return  ResponseEntity.ok(productById);    	
+        Products productById = productServices.getProductById(id);
+        if (productById == null) {
+            log.error("Product with ID {} not found.", id);
+            ErrorResponse errorResponse = new ErrorResponse(
+                new Date(),
+                HttpStatus.NOT_FOUND.toString(),
+                "Product not found",
+                "The requested product was not found"
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+        log.info("Retrieved product with ID: {}", id);
+        return ResponseEntity.ok(productById);
     }
-    
-    
-    
-    
 
+    
+    
+    
+    
+    /**
+     * Add a new product.
+     *
+     * @param productForm The product information to add.
+     * @return A ResponseEntity indicating success or an error response if the product could not be added.
+     */
     @PostMapping("/Product")
     public ResponseEntity<?> postProduct(@RequestBody ProductForm productForm) {
         String name = productForm.getName();

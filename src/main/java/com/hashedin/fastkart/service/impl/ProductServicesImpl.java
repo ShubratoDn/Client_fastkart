@@ -26,6 +26,13 @@ public class ProductServicesImpl implements ProductServices {
 	@Autowired
 	private ModelMapper mapper;
 	
+
+    /**
+     * Add a new product.
+     *
+     * @param product The product to be added.
+     * @return The added product.
+     */
 	@Override
 	public Products addProduct(Products products) {
 		Products save = productsRepository.save(products);
@@ -34,7 +41,12 @@ public class ProductServicesImpl implements ProductServices {
 	
 
 	
-	//get all products
+	/**
+     * Get a product by its ID.
+     *
+     * @param id The ID of the product to retrieve.
+     * @return The product with the specified ID, or null if not found.
+     */
 	@Override
 	public Products getProductById(int id) {
 		Products product = null;
@@ -57,6 +69,11 @@ public class ProductServicesImpl implements ProductServices {
 
 
 
+	/**
+     * Get a list of all products.
+     *
+     * @return A list of all products.
+     */
 	@Override
 	public List<Products> getAllProducts() {
 		List<Products> findAll = productsRepository.findAll();
@@ -64,7 +81,12 @@ public class ProductServicesImpl implements ProductServices {
 	}
 
 	
-	
+	/**
+     * Get a list of products by user ID.
+     *
+     * @param id The ID of the user.
+     * @return A list of products associated with the user.
+     */
 	public List<Products> getProductsByUserId(Integer id){
 		List<Products> productsList = productsRepository.findProductsByUserId(id);		
 		return productsList;

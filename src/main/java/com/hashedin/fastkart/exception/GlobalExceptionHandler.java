@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Date;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 	/**
@@ -44,35 +47,59 @@ public class GlobalExceptionHandler {
 //	}
 	
 	
-	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-		  ErrorResponse errorDetails = new ErrorResponse(
-			        new Date(),
-			        HttpStatus.METHOD_NOT_ALLOWED.toString(),
-			        "HTTP Method Not Supported",
-			        ex.getMessage() 
-			    );	
-		  return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-	}
 	
-	
-	
-	
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {	
-		   ErrorResponse errorDetails = new ErrorResponse(
-			        new Date(),
-			        HttpStatus.BAD_REQUEST.toString(),
-			        "Malformed Request Body",
-			        ex.getMessage().substring(0, ex.getMessage().indexOf(":")) 
-			    );		
-		  return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-	}
-	
-	
-	
-	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+	 /**
+     * Handles the exception when an HTTP request method is not supported.
+     * Returns a response with a "HTTP Method Not Supported" error message.
+     *
+     * @param ex The exception indicating the unsupported HTTP method.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        log.error("HTTP Method Not Supported: {}", ex.getMessage());
+        ErrorResponse errorDetails = new ErrorResponse(
+            new Date(),
+            HttpStatus.METHOD_NOT_ALLOWED.toString(),
+            "HTTP Method Not Supported",
+            ex.getMessage()
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    
+    
+    /**
+     * Handles the exception when the request body is not readable or malformed.
+     * Returns a response with a "Malformed Request Body" error message.
+     *
+     * @param ex The exception indicating a malformed request body.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        log.error("Malformed Request Body: {}", ex.getMessage());
+        ErrorResponse errorDetails = new ErrorResponse(
+            new Date(),
+            HttpStatus.BAD_REQUEST.toString(),
+            "Malformed Request Body",
+            ex.getMessage().substring(0, ex.getMessage().indexOf(":"))
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    
+    
+
+    /**
+     * Handles the exception when the media type of the request is not supported.
+     * Returns a response with an "Unsupported Media Type" error message.
+     *
+     * @param ex The exception indicating the unsupported media type.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
+        log.error("Unsupported Media Type: {}", ex.getMessage());
         ErrorResponse errorDetails = new ErrorResponse(
             new Date(),
             HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString(),
@@ -81,24 +108,41 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
-	
-	
-	 @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-	        ErrorResponse errorResponse = new ErrorResponse(
-	            new Date(),
-	            HttpStatus.BAD_REQUEST.toString(),
-	            "Bad Request",
-	            "Invalid parameter type: " + ex.getName()
-	        );
 
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-	    }
-	 
-	 
-	 @ExceptionHandler(RequestRejectedException.class)
+    
+    
+    /**
+     * Handles the exception when a method argument type mismatch occurs.
+     * Returns a response with a "Bad Request" error message indicating the invalid parameter type.
+     *
+     * @param ex The exception indicating the method argument type mismatch.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.error("Bad Request - Invalid parameter type: {}", ex.getName());
+        ErrorResponse errorResponse = new ErrorResponse(
+            new Date(),
+            HttpStatus.BAD_REQUEST.toString(),
+            "Bad Request",
+            "Invalid parameter type: " + ex.getName()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    
+
+    /**
+     * Handles the exception when a request is rejected, typically due to security constraints.
+     * Returns a response with a "Forbidden" error message indicating the request rejection reason.
+     *
+     * @param ex The exception indicating the request rejection.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(RequestRejectedException.class)
     public ResponseEntity<ErrorResponse> handleRequestRejectedException(RequestRejectedException ex) {
-
+        log.error("Forbidden - Request rejected: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(
             new Date(),
             HttpStatus.FORBIDDEN.toString(),

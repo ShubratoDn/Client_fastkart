@@ -24,17 +24,30 @@ public class UsersServicesImpl  implements UsersServices{
 	@Autowired
 	private UsersRepository usersRepository;
 	
-	@Override
-	public Users userRegister(Users user) {		
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));		
-		Users save = usersRepository.save(user);		
-		return save;
-	}
+	/**
+     * Register a new user.
+     *
+     * @param user The user to be registered.
+     * @return The registered user.
+     */
+    @Override
+    public Users userRegister(Users user) {
+        // Encode the user's password before saving it to the database
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Users savedUser = usersRepository.save(user);
+        return savedUser;
+    }
 
-	@Override
-	public Users getUserByUsername(String username) {
-		Users users = usersRepository.findByUsername(username);	
-		return users;
-	}
+    /**
+     * Get a user by their username.
+     *
+     * @param username The username of the user to retrieve.
+     * @return The user with the specified username, or null if not found.
+     */
+    @Override
+    public Users getUserByUsername(String username) {
+        Users user = usersRepository.findByUsername(username);
+        return user;
+    }
 	
 }

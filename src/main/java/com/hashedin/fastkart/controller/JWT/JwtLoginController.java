@@ -44,18 +44,27 @@ public class JwtLoginController {
 	private UsersServices services;
 
 	
-	@GetMapping("/test")
-	public ResponseEntity<?> test(){
-		
-		System.out.println("All is okay");
-		
-		return ResponseEntity.ok("ok");
-	}
 	
-	
-	
-	
-	@PostMapping("/signin")
+	/**
+     * A test endpoint to check if the application is running properly.
+     *
+     * @return A ResponseEntity with an "ok" message.
+     */
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        log.info("Test endpoint accessed. Application is running properly.");
+        return ResponseEntity.ok("ok");
+    }
+
+    
+    
+    /**
+     * Handles the HTTP POST request for user login.
+     *
+     * @param loginForm The login form containing the username and password.
+     * @return A ResponseEntity with a login response or an error response.
+     */
+    @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
@@ -66,7 +75,7 @@ public class JwtLoginController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
             log.error("Account is disabled for username: {}", username);
-            // Return a response for disabled account
+            // Return a response for a disabled account
             return new ResponseEntity<>(new ErrorResponse(new Date(), HttpStatus.FORBIDDEN.toString(), "Account is disabled", "The account associated with this username is disabled."), HttpStatus.FORBIDDEN);
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials for username: {}", username);
@@ -85,7 +94,7 @@ public class JwtLoginController {
         LoginResponse loginResponse = new LoginResponse(token, user);
 
         log.info("User '{}' logged in successfully.", username);
-        
+
         return ResponseEntity.ok(loginResponse);
     }
         
