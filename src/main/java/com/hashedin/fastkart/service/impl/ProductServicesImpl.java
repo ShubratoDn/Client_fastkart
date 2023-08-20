@@ -55,4 +55,20 @@ public class ProductServicesImpl implements ProductServices {
 		return product;
 	}
 
+
+
+	@Override
+	public List<Products> getAllProducts() {
+		List<Products> findAll = productsRepository.findAll();
+		return findAll;
+	}
+
+	
+	
+	public List<Products> getProductsByUserId(Integer id){
+		List<Products> productsList = productsRepository.findProductsByUserId(id);		
+		return productsList;
+	}
+	
+	
 }

@@ -3,10 +3,12 @@ package com.hashedin.fastkart.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Date;
 
@@ -81,5 +83,30 @@ public class GlobalExceptionHandler {
     }
 	
 	
+	 @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	            new Date(),
+	            HttpStatus.BAD_REQUEST.toString(),
+	            "Bad Request",
+	            "Invalid parameter type: " + ex.getName()
+	        );
+
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	    }
+	 
+	 
+	 @ExceptionHandler(RequestRejectedException.class)
+    public ResponseEntity<ErrorResponse> handleRequestRejectedException(RequestRejectedException ex) {
+
+        ErrorResponse errorResponse = new ErrorResponse(
+            new Date(),
+            HttpStatus.FORBIDDEN.toString(),
+            "Forbidden",
+            "Request rejected: " + ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
 	
 }

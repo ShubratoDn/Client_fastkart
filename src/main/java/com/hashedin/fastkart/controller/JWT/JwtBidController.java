@@ -123,13 +123,6 @@ public class JwtBidController {
     	List<Bids> allBidsByProductId = bidServices.getAllBidsByProductId(id);
     	
     	return ResponseEntity.ok(allBidsByProductId);
-    }
-    
-    
-    
-    
-    
-    
-    
+    }    
 
 }

@@ -1,7 +1,7 @@
 package com.hashedin.fastkart.controller.JWT;
 
 import java.util.Date;
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +37,31 @@ public class JwtProductController {
     
     BidsRepository bidsRepository;
 
+    
+    @GetMapping("/ListProduct")
+    public ResponseEntity<?> getAllProducts(){
+    	List<Products> allProducts = productServices.getAllProducts();
+    	return ResponseEntity.ok(allProducts);
+    }
+    
+    
+    //get products by user id
+    @GetMapping("/getmyproducts")
+    public ResponseEntity<?> getMyProducts(){    	
+    	String name = SecurityContextHolder.getContext().getAuthentication().getName();
+    	Users loggedUser = usersServices.getUserByUsername(name);    	
+    	List<Products> productsByUser = productServices.getProductsByUserId(loggedUser.getUserId());
+    	return ResponseEntity.ok(productsByUser);
+    }
+    
+    
+    //get products by user id
+    @GetMapping("/Product/user/{id}")
+    public ResponseEntity<?> getProductsByUserId(@PathVariable int id){  	
+    	List<Products> productsByUser = productServices.getProductsByUserId(id);
+    	return ResponseEntity.ok(productsByUser);
+    }
+    
     
     
     @GetMapping("/Product/{id}")
