@@ -9,10 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.hashedin.fastkart.model.Bids;
+import com.hashedin.fastkart.model.Products;
 
 @Repository
 public interface BidsRepository extends JpaRepository<Bids,Integer> {
 
+	List<Bids> findByProducts(Products products);
+	
     @Query(value = "SELECT * FROM bids a WHERE a.product_id = ?1",nativeQuery = true)
     List<Bids> findAllBidsByProductId(Integer productId);
 

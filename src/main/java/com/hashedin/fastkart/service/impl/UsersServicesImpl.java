@@ -1,5 +1,6 @@
 package com.hashedin.fastkart.service.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UsersServicesImpl  implements UsersServices{
 
 	@Autowired
+	private ModelMapper mapper;
+	
+	@Autowired
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
@@ -29,8 +33,8 @@ public class UsersServicesImpl  implements UsersServices{
 
 	@Override
 	public Users getUserByUsername(String username) {
-		Users users = usersRepository.findByUsername(username);
+		Users users = usersRepository.findByUsername(username);	
 		return users;
 	}
-
+	
 }

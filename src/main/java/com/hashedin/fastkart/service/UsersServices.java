@@ -9,6 +9,5 @@ public interface UsersServices {
 
 	public Users userRegister(Users user);
 	
-	public Users getUserByUsername(String username);
-	
+	public Users getUserByUsername(String username);		
 }

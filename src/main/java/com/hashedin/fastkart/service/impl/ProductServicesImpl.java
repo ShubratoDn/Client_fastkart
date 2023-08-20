@@ -3,8 +3,10 @@ package com.hashedin.fastkart.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.hashedin.fastkart.model.Bids;
 import com.hashedin.fastkart.model.Products;
@@ -20,6 +22,9 @@ public class ProductServicesImpl implements ProductServices {
 	
 	@Autowired
 	private BidsRepository bidsRepository;
+	
+	@Autowired
+	private ModelMapper mapper;
 	
 	@Override
 	public Products addProduct(Products products) {

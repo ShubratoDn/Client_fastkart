@@ -11,6 +11,7 @@ import lombok.ToString;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Setter
 @Getter
@@ -34,7 +35,7 @@ public class Bids {
 
     @ManyToOne
     @JoinColumn(name = "product_id") 
-    @JsonBackReference
+    @JsonIgnore
     private Products products;
 
 }

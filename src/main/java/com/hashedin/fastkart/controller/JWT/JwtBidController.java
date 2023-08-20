@@ -1,6 +1,7 @@
 package com.hashedin.fastkart.controller.JWT;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import com.hashedin.fastkart.service.BidServices;
@@ -111,5 +112,24 @@ public class JwtBidController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 		}
     }
+    
+    
+    
+    
+    
+    @GetMapping("/getBids/product/{id}")
+    public ResponseEntity<?> getProductBids(@PathVariable int id){
+    	
+    	List<Bids> allBidsByProductId = bidServices.getAllBidsByProductId(id);
+    	
+    	return ResponseEntity.ok(allBidsByProductId);
+    }
+    
+    
+    
+    
+    
+    
+    
 
 }
